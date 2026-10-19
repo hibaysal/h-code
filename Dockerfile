@@ -8,12 +8,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Browser-based VS Code. Pin the release so rebuilds are reproducible.
 # Needs curl + ca-certificates + apt from the base to download and install.
 ARG CODE_SERVER_VERSION=4.141.0
-RUN curl -fsSL -o /tmp/code-server.deb \
-      "https://github.com/coder/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server_${CODE_SERVER_VERSION}_amd64.deb" \
- && apt-get update \
+RUN apt-get update \
  && apt-get install -y --no-install-recommends /tmp/code-server.deb \
- && rm -f /tmp/code-server.deb \
- && rm -rf /var/lib/apt/lists/*
+ && curl -fsSL https://code-server.dev/install.sh | sh
 
 # Seed this box's identity + code-server config into the ubuntu home.
 # Runtime changes stay in the container.
