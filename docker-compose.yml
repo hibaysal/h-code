@@ -1,0 +1,29 @@
+services:
+  hvs:
+    build: .
+    image: hvs:local
+    container_name: hvs
+    hostname: hvs
+    restart: unless-stopped
+    cpus: 4
+    mem_limit: 4g
+    ports:
+      - "127.0.0.1:2222:22"
+      - "127.0.0.1:8080:8080"
+    expose:
+      - "8080"
+    networks:
+      FrontEnd:
+      BackEnd:
+        ipv4_address: 10.1.0.9
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+networks:
+  FrontEnd:
+    external: true
+  BackEnd:
+    external: true

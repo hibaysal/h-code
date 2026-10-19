@@ -1,0 +1,48 @@
+
+# ============================================================================
+#  Multi-identity git config  (seeded to ~/.gitconfig)
+# ----------------------------------------------------------------------------
+#  Pattern: one block per host/org. Each block does two things:
+#    1. [credential ...]  - which username to use, and how to store the token
+#    2. [includeIf ...]   - pulls in the matching id-* file (name + email)
+#       based on the remote URL of the repo you're in.
+#
+#  To add your own identity:
+#    - copy one of the example blocks below
+#    - change the host/org and username to yours
+#    - point `path` at a new ~/.config/git/id-<something> file
+#    - create that id-<something> file (see id-github / id-selfhosted)
+# ============================================================================
+
+[user]
+    useConfigOnly = true      # refuse to commit if no identity matched
+
+
+# ===== Example 1: github.com (public) =====
+# Repos under github.com/octocat/* use the id-github identity.
+[credential "https://github.com/octocat"]
+    username = octocat
+    helper = store
+[includeIf "hasconfig:remote.*.url:https://github.com/octocat/**"]
+    path = ~/.config/git/id-github
+
+
+# ===== Example 2: self-hosted git server (e.g. GitLab / Gitea) =====
+# Repos under git.example.com/* use the id-selfhosted identity.
+[credential "https://git.example.com"]
+    username = youruser
+    helper = store
+[includeIf "hasconfig:remote.*.url:https://git.example.com/**"]
+    path = ~/.config/git/id-selfhosted
+# Uncomment only if your server uses a private / self-signed CA:
+# [http "https://git.example.com"]
+#     sslVerify = false
+
+
+# ===== github.com default: let the GitHub CLI broker credentials =====
+[credential "https://github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
